@@ -37,6 +37,27 @@ class TestImplicitPatterns extends FreeSpec {
             } yield "ok"
           }
 
+          "foo" in {
+            case class One()
+            case class Two()
+            case class Three()
+
+            def dummy(): Int = 42
+            def foo(implicit a: Two): Three = Three()
+
+            for {
+              _ <- Option(1)
+              //this has to be implicit0 and <-
+              implicit0(one: One) <- Option(One())
+              //this has to be =
+              x = dummy()
+              //this has to be =
+              implicit0(two: Two) = Two()
+              //this has to be =
+              _ = foo
+            } yield "ok"
+          }
+
           "followed by <- bindings then = bindings" in {
             for {
               x <- Option(42)
